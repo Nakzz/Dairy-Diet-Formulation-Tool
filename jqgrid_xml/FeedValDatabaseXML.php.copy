@@ -1,0 +1,106 @@
+<?php
+
+
+class FeedValDatabaseXML extends FeedValXML {
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->feedValDao = new FeedValDatabaseDao();
+    }
+
+    private function getInitialLoadDate()
+    {
+        $todaysDate = new DateTime('now');
+        $maxDate = new DateTime($this->feedValDao->getMaxDate());
+        $initialLoadDate = $maxDate > $todaysDate? $todaysDate : $maxDate;
+
+        return $initialLoadDate->format('Y-m-d');
+    }
+
+    public function getXML()
+    {
+        $xmlRows = $this->xmlDoc->createElement(self::XML_ROWS_ELEMENT);
+        $compositions = $this->feedValDao->getNutrientCompositions();
+        $initialLoadDate = $this->getInitialLoadDate();
+        $permittedUnits = $this->getPermittedUnits();
+        $requiredUnits = $this->feedValDao->getRequiredUnits();
+        $todaysPrices = $this->feedValDao->getPricesForDate($initialLoadDate);
+
+        foreach ($compositions as $compositionRow) {
+            $xmlRow = $this->xmlDoc->createElement(self::XML_ROW_ELEMENT);
+            $ingredientID = $compositionRow[self::ID];
+            $ingRequiredUnit = $requiredUnits[$ingredientID]['unit'];
+            foreach ($compositionRow as $tag => $value) {
+                $formattedValue = $this->formatValue($value);
+                $xmlMap = $this->superColModel[$tag]['xmlmap'];
+                $xmlRow->appendChild($this->newXMLElement($xmlMap, $formattedValue));
+            }
+
+            $unitsSelectElement = $this->getUnitsSelectElement($permittedUnits, $ingRequiredUnit);
+            $xmlRow->appendChild($this->newXMLElement(self::UNIT, $unitsSelectElement));
+
+            if ($this->needToAppendCP()) {
+                $cpPct = $this->getCPPCT($compositionRow);
+                $xmlRow->appendChild($this->newXMLElement(self::CP, $cpPct));
+            }
+
+            $latestPrice = $this->getPriceInRequiredUnit($compositionRow, $todaysPrices, $ingRequiredUnit);
+            $xmlRow->appendChild($this->newXMLElement(self::PRICE, $this->formatValue($latestPrice)));
+
+            $xmlRows->appendChild($xmlRow);
+        }
+
+        $xmlRoot = $this->xmlDoc->createElement(self::XML_ROOT_ELEMENT);
+        $xmlRoot->appendChild($xmlRows);
+        $this->xmlDoc->appendChild($xmlRoot);
+
+        return $this->xmlDoc;
+    }
+
+    private function getPriceInRequiredUnit($compositionRow, $prices, $requiredUnit)
+    {
+        if (!isset($prices[$compositionRow[self::ID]])) {
+            return NULL;
+        }
+        $ingredient = $compositionRow[self::INGREDIENT];
+        $price = $prices[$compositionRow[self::ID]]['price'];
+        $sourceUnit = $prices[$compositionRow[self::ID]]['unit'];
+        $value = UnitConverter::getPriceInUnit($ingredient, $price, $sourceUnit, $requiredUnit);
+
+        return $value;
+    }
+
+    private function formatValue($value)
+    {
+        if (is_numeric($value)) {
+            return round($value, 2);
+        }
+
+        return $value;
+    }
+
+    public function getJQGridSettings()
+    {
+        $yaml = yaml_parse_file(self::JQGRID_SETTINGS_FILE);
+        $jqGridSettings = $yaml['settings'];
+        $jqGridSettings['colModel'] = $this->getJQGridColModel();
+
+        return $jqGridSettings;
+    }
+
+    private function getJQGridColModel()
+    {
+        $colModel = array();
+        foreach ($this->superColModel as $column) {
+            $colModel[] = $column;
+        }
+
+        return $colModel;
+    }
+
+    public function getNumberOfNutrients()
+    {
+        return $this->feedValDao->getNumberOfNutrients();
+    }
+}

@@ -1,0 +1,53 @@
+.head_main
+  {
+    padding: 2px;
+    background-color: skyblue;
+    border-radius: 10px 10px 0 0;
+  }
+  .head_main h1
+  {
+    font-size: 20px;
+    text-align: center;
+  }
+  .clr
+  {
+    clear: both;
+    height: 25px;
+  }
+  .container
+  {
+    width: 500px;
+    margin: 0 auto;
+    margin-top: 50px;
+    border: solid 1px skyblue;
+    border-radius: 10px;
+  }
+
+  .success_msg
+  {
+    font-size: medium;
+    color: green;
+    text-align: center;
+  }
+  .alert_msg
+  {
+    font-size: medium;
+    color: red;
+    text-align: center;
+  }
+  .inner
+  {
+    padding-left: 115px;
+  }
+  .inner span
+  {
+    color: blue;
+    font-size: small;
+  }
+  .upload
+  {
+    border: solid 1px #ccc;
+    background-color: #F9F9F9;
+    padding: 5px;
+    border-radius: 5px;
+  }

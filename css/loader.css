@@ -1,0 +1,159 @@
+#squaresWaveG{
+    position:relative;
+    width:80px;
+    height:10px}
+
+.squaresWaveG{
+    position:absolute;
+    top:0;
+    background-color:#FF0000;
+    width:10px;
+    height:10px;
+    -moz-animation-name:bounce_squaresWaveG;
+    -moz-animation-duration:1.9s;
+    -moz-animation-iteration-count:infinite;
+    -moz-animation-direction:linear;
+    -webkit-animation-name:bounce_squaresWaveG;
+    -webkit-animation-duration:1.9s;
+    -webkit-animation-iteration-count:infinite;
+    -webkit-animation-direction:linear;
+    -ms-animation-name:bounce_squaresWaveG;
+    -ms-animation-duration:1.9s;
+    -ms-animation-iteration-count:infinite;
+    -ms-animation-direction:linear;
+    -o-animation-name:bounce_squaresWaveG;
+    -o-animation-duration:1.9s;
+    -o-animation-iteration-count:infinite;
+    -o-animation-direction:linear;
+    animation-name:bounce_squaresWaveG;
+    animation-duration:1.9s;
+    animation-iteration-count:infinite;
+    animation-direction:linear;
+}
+
+#squaresWaveG_1{
+    left:0;
+    -moz-animation-delay:0.76s;
+    -webkit-animation-delay:0.76s;
+    -ms-animation-delay:0.76s;
+    -o-animation-delay:0.76s;
+    animation-delay:0.76s;
+}
+
+#squaresWaveG_2{
+    left:11px;
+    -moz-animation-delay:0.95s;
+    -webkit-animation-delay:0.95s;
+    -ms-animation-delay:0.95s;
+    -o-animation-delay:0.95s;
+    animation-delay:0.95s;
+}
+
+#squaresWaveG_3{
+    left:22px;
+    -moz-animation-delay:1.14s;
+    -webkit-animation-delay:1.14s;
+    -ms-animation-delay:1.14s;
+    -o-animation-delay:1.14s;
+    animation-delay:1.14s;
+}
+
+#squaresWaveG_4{
+    left:33px;
+    -moz-animation-delay:1.33s;
+    -webkit-animation-delay:1.33s;
+    -ms-animation-delay:1.33s;
+    -o-animation-delay:1.33s;
+    animation-delay:1.33s;
+}
+
+#squaresWaveG_5{
+    left:44px;
+    -moz-animation-delay:1.52s;
+    -webkit-animation-delay:1.52s;
+    -ms-animation-delay:1.52s;
+    -o-animation-delay:1.52s;
+    animation-delay:1.52s;
+}
+
+#squaresWaveG_6{
+    left:55px;
+    -moz-animation-delay:1.71s;
+    -webkit-animation-delay:1.71s;
+    -ms-animation-delay:1.71s;
+    -o-animation-delay:1.71s;
+    animation-delay:1.71s;
+}
+
+#squaresWaveG_7{
+    left:66px;
+    -moz-animation-delay:1.9s;
+    -webkit-animation-delay:1.9s;
+    -ms-animation-delay:1.9s;
+    -o-animation-delay:1.9s;
+    animation-delay:1.9s;
+}
+
+#squaresWaveG_8{
+    left:77px;
+    -moz-animation-delay:2.09s;
+    -webkit-animation-delay:2.09s;
+    -ms-animation-delay:2.09s;
+    -o-animation-delay:2.09s;
+    animation-delay:2.09s;
+}
+
+@-moz-keyframes bounce_squaresWaveG{
+    0%{
+        background-color:#FF0000;
+    }
+
+    100%{
+        background-color:#FFFFFF;
+    }
+
+}
+
+@-webkit-keyframes bounce_squaresWaveG{
+    0%{
+        background-color:#FF0000;
+    }
+
+    100%{
+        background-color:#FFFFFF;
+    }
+
+}
+
+@-ms-keyframes bounce_squaresWaveG{
+    0%{
+        background-color:#FF0000;
+    }
+
+    100%{
+        background-color:#FFFFFF;
+    }
+
+}
+
+@-o-keyframes bounce_squaresWaveG{
+    0%{
+        background-color:#FF0000;
+    }
+
+    100%{
+        background-color:#FFFFFF;
+    }
+
+}
+
+@keyframes bounce_squaresWaveG{
+    0%{
+        background-color:#FF0000;
+    }
+
+    100%{
+        background-color:#FFFFFF;
+    }
+
+}

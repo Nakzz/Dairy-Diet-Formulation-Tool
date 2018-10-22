@@ -1,0 +1,57 @@
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 26px;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
+}
+
+.nav-tabs-footer {
+    margin-bottom: 0;
+}
+
+.panel.pull-right {
+    margin-left: 20px;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+input#dateP {
+    cursor: pointer;
+}
+
+.row.bottom-buffer {
+    margin-bottom: 26px;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    background: #c9efc6;
+    border: 1px solid #c5cdd4;
+    color: #363636;
+}
+
+.ui-state-highlight-forage {
+    background: #c6d7ef;
+    border: 1px solid #c5cdd4;
+    color: #363636;
+}
+
+.ui-jqgrid-labels th {
+    text-align: center;
+}
+
+th.ui-th-column div {
+    white-space: normal !important;
+    height: auto !important;
+    padding: 2px;
+}
+
+#prediction-accuracy tbody tr td {
+    padding: 0 8px 0 0;
+}

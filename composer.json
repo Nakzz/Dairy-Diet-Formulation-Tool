@@ -1,0 +1,9 @@
+{
+    "require": 
+    {
+        "monolog/monolog": "1.6.0",
+	"smalot/pdfparser": "0.9.*"
+    }
+
+ 
+}

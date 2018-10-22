@@ -1,0 +1,54 @@
+
+# Settings for the jqGrid grid.
+---
+settings:
+  url:  # Will be set in the PHP script.
+  datatype: xml
+  mtype: GET
+  autowidth: false
+  cellEdit: true
+  cellsubmit: clientArray
+  editurl: clientArray
+  footerrow: true
+  gridview: true     # Cannot use with afterInsertRow event!
+  shrinkToFit: true  # If false forceFit is ignored!
+  height: auto
+  hidegrid: false
+  loadonce: true     # Grid datatype is changed to 'local' once the grid has been loaded.
+  loadui: block
+  multiselect: true  # Allows selecting multiple rows.
+  multiselectWidth: 30
+  rownumbers: true
+  rowNum: 1000       # Very large number so that all rows are loaded.
+  sortable: true
+  sortname: ID
+  sortorder: asc
+  toolbar:
+    - true
+    - both
+  xmlReader:
+    root: Rows
+    row: Row
+    repeatitems: false
+
+  # Default column settings.
+  cmTemplate:
+    align: center
+    editable: true
+    edittype: text
+    editrules:
+      required: true
+      number: true
+    fixed: false
+    # Have to specify the hidedlg property. It is being used to get a count of
+    # number of nutrients selected in the grid. See getSelectedNutrients(). If it
+    # is not specified the hidedlg property does not appear in the colModel object. */
+    hidedlg: false
+    #resizable: false
+    sortable: false  # sortable: true was selecting wrong rows after sorting.
+    width: 60
+
+  # Column settings.
+  colModel: # Will be set in the PHP script.
+
+...

@@ -1,0 +1,269 @@
+<?php
+/**
+ * Minimization Calculations using lpsolve 
+ */
+class FeedValMinimization
+{
+    private $minimizationArray; 
+    
+    const YES = 'YES';
+    const NO = 'NO';
+    const NUM_POUNDS_IN_ONE_CWT = 100;
+    const NUM_POUNDS_IN_ONE_TON = 2000;
+    const NUM_POUNDS_IN_ONE_KG = 2.20462262185;
+   
+
+    public function __construct($columnsToAppear, $data)
+    {
+        //$this->objPHPExcel = new PHPExcel();
+        //$this->createSpreadsheet($columnsToAppear, $data);
+        $this->getCoefficients($columnsToAppear, $data);
+    }
+
+    public function getMinArray()
+    {
+	
+	return $this->minimizationArray;
+
+    } 
+
+    public function getCoefficients($columnsToAppear, $data)
+    {	
+	$f = array();
+        $b_constraints = array();
+        $b_max_2 = array();
+	$b_min_1 = array();
+        $b_min_2 = array();
+        $nutrients = array();
+
+        $non_selected_indexes = array();
+	$selected_indexes = array(); 
+
+        //Generation of prices vector (f) and constraints limits (b_constraints) 
+        $index_array=0;
+	//$scPriceInBu = UnitConverter::getPriceInUnit(1, 10, 'kg', 'bu');
+	//echo $scPriceInBu;
+	foreach ($data as $dataRow) {
+		if ($dataRow['Selected'] === YES){
+			if($dataRow['Price_Unit']=='')
+				$f[]=0;
+			else	
+				{
+				$unit_row = $dataRow['Unit'];
+			        	
+				switch ($unit_row) {
+				
+
+				case 'ton':
+					$calculation = $dataRow['Price_Unit'] * self::NUM_POUNDS_IN_ONE_KG  / self::NUM_POUNDS_IN_ONE_TON;
+					$f[]=$calculation;
+					break;
+				case 'cwt':
+                                        $f[]=$dataRow['Price_Unit'] * self::NUM_POUNDS_IN_ONE_KG / self::NUM_POUNDS_IN_ONE_CWT;
+                                	break;
+				default:
+					$f[]=$dataRow['Price_Unit'];
+				}
+					
+				}
+		        $b_constraints[]=$dataRow['Max_kgcowd'];
+			$b_min_1[]=$dataRow['Min_kgcowd'];
+			$nutrientsRow = array_slice($dataRow, 3);
+                        $nutrients[]= array_slice($nutrientsRow, 0, count($b_min_22)-6); //FIXME: Change to -5 when Last resulta column dissapear
+			$selected_indexes[] = $index_array;
+			
+		}else {
+		if ($dataRow['Ingredient'] == 'Max'){
+               		foreach ($dataRow as $subRowData)
+				{
+					$b_max_2[] = $subRowData;
+				}
+				$b_max_22 = array_slice($b_max_2, 3);
+				$b_max_222 = array_slice($b_max_22, 0, count($b_max_22)-6); //FIXME: Change to -5 when Last resulta column dissapear 	
+			}
+
+		if ($dataRow['Ingredient'] == 'Min'){
+                        	foreach ($dataRow as $subRowData)
+                        	$b_min_2[] = $subRowData;
+                        	$b_min_22 = array_slice($b_min_2, 3);
+                        	$b_min_222 = array_slice($b_min_22, 0, count($b_min_22)-6); //FIXME: Change to -5 when Last resulta column dissapear
+                	}
+
+		
+			$non_selected_indexes[]=$index_array;
+
+		}
+		$index_array++;
+
+        }
+
+	 //print_r($non_selected_indexes);
+        
+	foreach ($b_max_222 as $element_b_2) {
+                        $b_constraints[]= $element_b_2;
+                }
+
+
+	 foreach ($b_min_1 as $element_b_1) {
+                        $b_constraints[]= $element_b_1;
+                }
+
+
+        foreach ($b_min_222 as $element_b) {
+                                $b_constraints[]=$element_b;
+                }
+	
+        	
+	$this->minimizationArray=$this->lpcalculate($f,$b_constraints, count($b_max_222),$nutrients,$selected_indexes,$non_selected_indexes);
+
+
+    }
+
+
+
+   private function lpcalculate($f,$b_constraints, $num_nutrients,$nutrients,$selected_indexes,$non_selected_indexes)
+   {
+  
+	include("lp_maker.php");
+	$num_ingredients = count($f);
+
+	#[2] Inequality operator
+	$ineq =array();
+	#Associatd to Sol Constrainst less or equal to
+	for($i=0;$i<$num_ingredients;$i++)
+		$ineq[]= -1;
+
+	#Associated to Nutrients Constraints
+	//Less than constraints
+	for($j=0;$j<$num_nutrients;$j++)
+		$ineq[]=-1;
+
+	//Greater than constraints
+	#Associatd to Sol Constrainst greater or equal to
+	for($i=0;$i<$num_ingredients;$i++)
+		$ineq[]= 1;
+
+	for($j=0;$j<$num_nutrients;$j++)
+		$ineq[]= 1;
+
+
+	//////////////////////
+	$A = array();
+	$a_int = array();
+
+	for($j=0;$j<$num_ingredients;$j++){
+        	for($i=0;$i<$num_ingredients;$i++){
+                       if ($i==$j)
+                                $a_int[]=1;
+                       else
+                                $a_int[]=0;
+
+            }
+        $A[] = $a_int;
+        $a_int = array();
+	}
+
+	$DM = array();
+	//Constraints
+	$nutrientsArray = array();
+	foreach($nutrients as $nutrientRow){
+
+        	$DM[]=floatval($nutrientRow['DM']); 
+		$nutrientRowtmp = array();
+		foreach($nutrientRow as $nutrientElement){
+		$nutrientRowtmp[]=floatval($nutrientElement); 
+		}
+		$nutrientsArray[]=$nutrientRowtmp;
+	
+	}
+
+	$a_int = array();
+	for($j=0;$j<$num_nutrients;$j++){
+        	for($i=0;$i<$num_ingredients;$i++){
+                	if ($j==($num_nutrients-1))
+                        	$a_int[$i]=$nutrientsArray[$i][$j]/100;
+                	elseif ($j==0)
+                        	$a_int[$i]=$nutrientsArray[$i][$j]*$DM[$i]/100;
+                	else
+                        	$a_int[$i]=$nutrientsArray[$i][$j]*$DM[$i]/10000;
+                	}
+
+        	$A[] = $a_int;
+        	$a_int = array();
+	}	
+
+
+	$a_int = array();
+
+	for($j=0;$j<$num_ingredients;$j++){
+        	for($i=0;$i<$num_ingredients;$i++){
+                       if ($i==$j)
+                                $a_int[]=1;
+                       else
+                                $a_int[]=0;
+
+            	}
+        $A[] = $a_int;
+        $a_int = array();
+	}
+
+
+	$a_int = array();
+	for($j=0;$j<$num_nutrients;$j++){
+        	for($i=0;$i<$num_ingredients;$i++){
+                	if ($j==($num_nutrients-1))
+                        	$a_int[$i]=$nutrientsArray[$i][$j]/100;
+                	elseif ($j==0)
+                        	$a_int[$i]=$nutrientsArray[$i][$j]*$DM[$i]/100;
+                	else
+                        	$a_int[$i]=$nutrientsArray[$i][$j]*$DM[$i]/10000;
+                	}
+
+        		$A[] = $a_int;
+       		 	$a_int = array();
+	}	
+	//////////////////////////
+
+	for($i=0;$i<count($f);$i++){
+
+		$f[$i] = floatval($f[$i]);
+	}
+
+	for($i=0;$i<count($b_constraints);$i++){
+        
+        	$b_constraints[$i] = floatval($b_constraints[$i]);
+	}
+
+	$lp = lp_maker($f, $A, $b_constraints, $ineq, null, null, null, 1, 0);
+	$solvestat = lpsolve('solve', $lp);
+	$equation_result = lpsolve('get_objective', $lp);
+	$maximization_array = lpsolve('get_variables', $lp);
+	lpsolve('delete_lp', $lp);
+
+	//maing solution of array of size #ingredients+MIN,MAX
+        for($i=0;$i<count($maximization_array[0]);$i++){
+                $index_tmp = $selected_indexes[$i];
+                $minimizationArraySelected[$index_tmp] = $maximization_array[0][$i];
+        }
+
+        for($i=0;$i<count($non_selected_indexes);$i++){
+                $index_tmp = $non_selected_indexes[$i];
+                $minimizationArrayNonSelected[$index_tmp] = 0; //FIXME: Change the value to Null or something else
+        }
+	//
+
+
+        $minimizationArrayFull = $minimizationArraySelected + $minimizationArrayNonSelected;
+
+	for($i=0;$i<count($minimizationArrayFull);$i++){
+
+		$minimizationArrayFinal[]= $minimizationArrayFull[$i];
+	}	
+	
+	$maximization_array[0]=$minimizationArrayFinal;
+        $maximization_array[2]=$equation_result;
+	return $maximization_array;
+
+   }
+
+}

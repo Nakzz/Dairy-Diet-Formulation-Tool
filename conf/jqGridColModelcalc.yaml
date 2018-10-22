@@ -1,0 +1,276 @@
+#
+# NOTE 1: This may not be the colMap that ends up getting used for a particular
+#         run of the tool. The actual colMap that ends up getting used depends
+#         on the spreadsheet uploaded (the spreadsheet may not contain all the
+#         nutrients listed here.) However all the colMaps will be a subset of
+#         this colModel.
+#
+# NOTE 2: The output columns Predicted Value and Actual Price do not have xmlmap
+#         attributes as they do not have any corresponding XML data. The values
+#         for these columns are generated as a result of the analysis.
+#
+# NOTE 3: Event handlers (and formatters) cannot be specified here as yaml_parse_file
+#         parses them as strings an not JavaScript function types.
+#
+
+---
+
+# The colModel from which all colModels are constructed.
+colModel:
+  # The ID column.
+  ID:
+    name: ID
+    xmlmap: ID
+    label: ID
+    sorttype: int
+    key: TRUE
+    hidden: TRUE
+    hidedlg: TRUE
+    editable: FALSE
+
+  # The Selected/Unselected column.
+  Selected:
+    name: Selected
+    xmlmap: Selected
+    label: Selected
+    hidedlg: TRUE
+    editable: FALSE
+    editoptions:
+      value: "Yes:No"
+    hidden: TRUE
+
+  # The Ingredients column.
+  Ingredient:
+    name: Ingredient
+    xmlmap: Ingredient
+    label: Ingredient
+    align: left
+    sorttype: text
+    hidedlg: TRUE
+    editrules:
+      number: FALSE
+    width: 140
+
+# The NEl3x column.
+  NEl3x_Mcalkg:
+    name: NEl3x_Mcalkg
+    xmlmap: NEl3x_Mcalkg
+    label: NEl3x Mcal/kg
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+    width: 70
+
+ # The CP column.
+  CP:
+    name: CP
+    xmlmap: CP
+    label: CP %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+
+ # The NDF column.
+  NDF:
+    name: NDF
+    xmlmap: NDF
+    label: NDF %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+ # The ADF column: TODO
+
+  #ADF:
+  #  name: ADF
+  #  xmlmap: ADF
+  #  label: ADF %
+  #  sorttype: float
+  #  classes: input_column
+  #  hidden: FALSE
+
+  # The RUP column.
+  RUP:
+    name: RUP
+    xmlmap: RUP
+    label: RUP %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+
+ # The RDP column.
+  RDP:
+    name: RDP
+    xmlmap: RDP
+    label: RDP %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+  # The Lipid column.
+  Lipid:
+    name: Lipid
+    xmlmap: Lipid
+    label: Lipid %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+  # The peNDF column.
+  peNDF:
+    name: peNDF
+    xmlmap: peNDF
+    label: peNDF %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+  # The Ca column.
+  Ca:
+    name: Ca
+    xmlmap: Ca
+    label: Ca %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+  # The Phos column.
+  Phos:
+    name: Phos
+    xmlmap: Phos
+    label: Phos %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+  # The Lys column.
+  #Lys:
+  #  name: Lys
+  #  xmlmap: Lys
+  #  label: Lys %
+  #  sorttype: float
+  #  classes: input_column
+  #  hidden: TRUE
+
+  # The Met column.
+  #Met:
+  #  name: Met
+  #  xmlmap: Met
+  #  label: Met %
+  #  sorttype: float
+  #  classes: input_column
+  #  hidden: TRUE
+
+
+  # The dNDF column.
+  #dNDF:
+  #  name: dNDF
+  #  xmlmap: dNDF
+  #  label: dNDF
+  #  sorttype: float
+  #  classes: input_column
+  #  hidden: FALSE
+
+  # The Starch column.
+  Starch:
+    name: Starch
+    xmlmap: Starch
+    label: Starch
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+
+  # The Sugars column.
+  #Sugars:
+  #  name: Sugars
+  #  xmlmap: Sugars
+  #  label: Sugars
+  #  sorttype: float
+  #  classes: input_column
+  #  hidden: TRUE
+
+  # The DM column.
+  DM:
+    name: DM
+    xmlmap: DM
+    label: DM %
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+    hidedlg: TRUE
+
+
+
+  # the Min Kg/cow.d
+  Min_kgcowd:
+    name: Min_kgcowd
+    xmlmap: Min_kgcowd
+    label: Amount Provided
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+    hidedlg: TRUE
+    width: 70
+    
+    
+    
+
+  # the Max Kg/cow.d
+  Max_kgcowd:
+     name: Max_kgcowd
+     xmlmap: Max_kgcowd
+     label: Max kg/cow.d
+     sorttype: float
+     classes: input_column
+     hidden: TRUE
+     hidedlg: TRUE
+     width: 70
+
+
+  # The Unit column.
+  Unit:
+    name: Unit
+    xmlmap: Unit
+    label: Unit
+    sorttype: text
+    editable: FALSE
+    classes: input_column
+    hidden: FALSE
+    hidedlg: TRUE
+
+  # The Price column.
+  Price_Unit:
+    name: Price_Unit
+    xmlmap: Price_Unit
+    label: Price* $/Unit
+    sorttype: float
+    classes: input_column
+    hidden: FALSE
+    hidedlg: TRUE
+
+  # The Predicted Value column.
+  Predicted_Value:
+    name: Predicted_Value
+    label: Solution kg/cow.d #Predicted Value $/Unit
+    sorttype: float
+    editable: FALSE
+    hidedlg: TRUE
+    hidden: TRUE
+    width: 90
+    classes: output_column predicted_value_column
+
+  # The Actual Price column.
+  Actual_Price:
+    name: Actual_Price
+    label: 
+    sorttype: float
+    hidedlg: TRUE
+    hidden: TRUE
+    formatoptions:
+    decimalPlaces: 0
+    editable: FALSE
+    classes: bold large output_column actual_price_column
+    width: 100
+...
