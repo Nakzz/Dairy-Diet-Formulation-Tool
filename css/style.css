@@ -1,4 +1,6 @@
-
+.nonZeroRow{
+    background: #ff8585 !important;
+}
 .tab-content {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
