@@ -522,11 +522,13 @@ var feedvalGrid = {
 
         $.each(allIngredients, function (index, ingredientID) {
             var ind = $('tr#' + ingredientID).find('td').html();
-
             if (ingredientID < 41) {
                 ingredientsIDs.push(ingredientID);
             }
+        });
 
+        $.each(selectedIngredients, function (index, ingredientID) {
+            var ind = $('tr#' + ingredientID).find('td').html();
             if (ind < 7 && ind > 0) {
                 forageIngredientID.push(ingredientID);
             }
@@ -2011,8 +2013,8 @@ var feedvalGrid = {
         });
 
 
-        feedvalGrid.setCell('header2', 'Min_kgcowd', 'Amount Provided lb/cow.d');
-        $('div#jqgh_grid_Min_kgcowd').text('Amount Provided lb/cow.d');
+        feedvalGrid.setCell('header2', 'Min_kgcowd', 'Amount Provided kg/cow.d');
+        $('div#jqgh_grid_Min_kgcowd').text('Amount Provided kg/cow.d');
 
 
         allIngredientIDs = feedvalGrid.getAllIngredientIDs();
@@ -2162,12 +2164,14 @@ var feedvalGrid = {
                 feedvalGrid.grid.jqGrid('setCell', ingredientID, 'NEl3x_Mcalkg', maxNEL.toFixed(2));
             }
         });
+
+        if (toolState == 'Optimizer') {
         $('div#jqgh_grid_Min_kgcowd').text('Min lb/cow.d');
         feedvalGrid.setCell('header2', 'Min_kgcowd', 'Min lb/cow.d');
 
         $('div#jqgh_grid_Max_kgcowd').text('Max lb/cow.d');
         feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max lb/cow.d');
-
+        }
 
         $('div#jqgh_grid_NEl3x_Mcalkg').text('NEl3x Mcal/lb');
         feedvalGrid.grid.jqGrid('setCell', 'header2', 'NEl3x_Mcalkg', 'NEl3x Mcal/lb');
@@ -2220,12 +2224,14 @@ var feedvalGrid = {
         });
 
         // console.log(feedvalGrid.grid.jqGrid('getCell', '42', 'NEl3x_Mcalkg'));
-
-        $('div#jqgh_grid_Min_kgcowd').text('Min kg/cow.d');
-        feedvalGrid.setCell('header2', 'Min_kgcowd', 'Min kg/cow.d');
-        $('div#jqgh_grid_Max_kgcowd').text('Max kg/cow.d');
-        feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max kg/cow.d');
-        $('div#jqgh_grid_Predicted_Value').text('Solution kg/cow.d');
+if(toolState == 'Optimizer'){
+ $('div#jqgh_grid_Min_kgcowd').text('Min kg/cow.d');
+ feedvalGrid.setCell('header2', 'Min_kgcowd', 'Min kg/cow.d');
+ $('div#jqgh_grid_Max_kgcowd').text('Max kg/cow.d');
+ feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max kg/cow.d');
+ $('div#jqgh_grid_Predicted_Value').text('Solution kg/cow.d');
+}
+       
 
         $('div#jqgh_grid_NEl3x_Mcalkg').text('NEl3x Mcal/kg');
         // feedvalGrid.setCell('header2', 'NEl3x Mcal/lb', 'NEl3x Mcal/kg');

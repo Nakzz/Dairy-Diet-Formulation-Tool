@@ -6,12 +6,9 @@
 
 ini_set('display_errors', 1);
 
-
-
 // //version
 
 // require_once "/var/www/dairymgt-site/REDIRECTION/versionControl.php";
-
 
 ?>
 
@@ -143,7 +140,7 @@ include "overview.php";
         </div>
 
         <div id="tool" class="tab-pane" style="padding:26px">
-        
+
  <div class="row bottom-buffer">
 
 <button class="btn btn-default optimizer" id="optimizer"
