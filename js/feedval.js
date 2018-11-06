@@ -19,13 +19,26 @@ var feedvalGrid = {
     gridview: true,
 
 
+    /*
+     * Gets the number of all the Nutrients.
+     */
     getNumberOfNutrients: function () {
         return $.map(feedvalGrid.nutrients, function (element) {
             return element;
         }).length;
     },
 
+    /*
+     * Converts units of the ingredient passsed but submitting ajax request containing two properties
+     * 
+     * param ing ingredient
+     * 
+     * return ajax request containing 
+     * TODO: i
+     * NOTE: performs an AJAX request, but why?
+     */
     convertUnits: function (ing) {
+        console.log("convertUnits method is called, ing: " + ing);
         var ingredients;
         if (ing.ingredientName !== undefined) {
             ingredients = [ing];
@@ -42,7 +55,14 @@ var feedvalGrid = {
         });
     },
 
+    /*
+     * Returns true or false if only RUP and RDP (Nutrients ) are  selected.
+     * 
+     * return boolean
+     * TODO: I don't think this method does anything important. Consider removing
+     */
     onlyRupRdpSelected: function () {
+        console.log("onlyRupRdpSelected method is called");
         var selectedNutrients;
         selectedNutrients = feedvalGrid.getSelectedNutrients();
         return selectedNutrients.length == 2 &&
@@ -52,7 +72,16 @@ var feedvalGrid = {
             }).length == 2;
     },
 
+
+    /*
+     * Returns array of selected nutrients that aren't present in any selected feed.
+     * 
+     * return array
+     * TODO: I don't think this method does anything important. Consider removing since all the feed contains the same nutients.
+     * Note: might be for future implementation
+     */
     getSelectedNutrientsNotPresentInAnySelectedFeed: function () {
+        console.log("getSelectedNutrientsNotPresentInAnySelectedFeed method is called");
         var selectedIngredientIDs, selectedNutrients, nutrientCoefficientMatrix, matrixColumnNumber,
             nutrientCoefficients, allZeroes, selectedNutrientNotPresentInAnySelectedFeed = [];
 
@@ -75,8 +104,16 @@ var feedvalGrid = {
         return selectedNutrientNotPresentInAnySelectedFeed;
     },
 
-
+    /*
+     * Returns true or false if CP is selected and RUP or RDP (Nutients) are selected
+     * 
+     * return boolean
+     * 
+     * TODO: I don't think this method does anything important. Consider removing since all the feed contains the same nutients.
+     * Note: might be for future implementation
+     */
     cpSelectedWithRupOrRdp: function () {
+        console.log("cpSelectedWithRupOrRdp method is called");
         var selectedNutrients;
         selectedNutrients = feedvalGrid.getSelectedNutrients();
         return $.grep(selectedNutrients, function (nutrient) {
@@ -88,10 +125,20 @@ var feedvalGrid = {
             }).length >= 1;
     },
 
+    /*
+     * Returns array of ids containting the id of the ingredietnts that are seleceted in the grid
+     * 
+     * return array containing ids
+     */
     getSelectedIngredientIDs: function () {
         return this.grid.jqGrid('getGridParam', 'selarrrow');
     },
 
+    /*
+     * Returns array of ids containting the id of the ingredietnts that are not seleceted in the grid
+     * 
+     * return array containing ids
+     */
     getNonSelectedIngredientIDs: function () {
         var allIngredientIDs, selectedIngredientIDs, NonSelectedIngredientIDs = [];
         selectedIngredientIDs = this.grid.jqGrid('getGridParam', 'selarrrow');
@@ -112,7 +159,13 @@ var feedvalGrid = {
         return NonSelectedIngredientIDs;
     },
 
+    /*
+     * Returns array of nutrients that are seleceted in the grid model
+     * 
+     * return array containing nutrients
+     */
     getSelectedNutrients: function () {
+        console.log("getSelectedNutrients method is called");
         var colModel, selectedNutrients = [];
         colModel = this.grid.jqGrid('getGridParam', 'colModel');
         $.each(colModel, function (colIndex, col) {
@@ -120,15 +173,22 @@ var feedvalGrid = {
                 selectedNutrients.push(this.name);
             }
         });
-
         return selectedNutrients;
     },
 
 
     /*
-        Price* &/Unit Column in LB unit
-    */
+     *Returns prices of the feed to Kg
+     * Modifies each ingredient object and initializes their properties of name, id, price, fromUnit (Unit column) and toUnit.
+     * converting to Kg. ?
+     *
+     * param ingredientIDs array of IDs
+     * 
+     * TODO: Question for Professor: Price of the feed should be dependent on the Unit column ?
+     * Note: fromUnit(Unit column) and toUnit(kg) significance
+     */
     getFeedPrices: function (ingredientIDs) {
+        console.log("getFeedPrices method is called");
         var ingredients = [];
         $.each(ingredientIDs, function (index, ingredientID) {
             ingredients[index] = {
@@ -136,17 +196,31 @@ var feedvalGrid = {
                 ingredientID: ingredientID,
                 price: feedvalGrid.getCell(ingredientID, 'Price_Unit'),
                 fromUnit: feedvalGrid.getUnit(ingredientID),
-                toUnit: 'Lb'
+                toUnit: 'Kg'
             };
         });
 
         return feedvalGrid.convertUnits(ingredients);
     },
 
+    /*
+     *Returns units of an ingredient from Unit column of the grid
+     *
+     * param ingredientID int
+     * 
+     */
     getUnit: function (ingredientID) {
         return $('tr#' + ingredientID).find('select.unit').val();
     },
 
+    /*
+     *Returns cell data of an ingredient from any columnName given
+     * If contains '%', then gives decimal value
+     *
+     * param ingredientID int
+     * param columnName string
+     * return cellValue string
+     */
     getCell: function (ingredientID, columnName) {
         var cellValue, colLabel;
         cellValue = feedvalGrid.grid.jqGrid('getCell', ingredientID, columnName);
@@ -158,8 +232,13 @@ var feedvalGrid = {
         }
     },
 
-    //Returns array of DM value dotted with Amount Provided.
-    // TODO: look in =to unit
+    /*
+     *Returns array of (dmValue * amountProvided) of given ingredients
+     *
+     * param ingredientIDs array
+     * return array containting(dmValue * amountProvided)
+     * TODO: check if it's better if the array's sum is returned based on where they are called since thats what dotProduct means. 
+     */
     getDmDotAmountProvided: function (ingredientIDs) {
         var dotProduct = [];
         var dmValue = 0;
@@ -176,7 +255,6 @@ var feedvalGrid = {
 
             dotProduct[ingredientIndex] = dmValue * amountProvided;
         });
-
         return dotProduct;
     },
 
@@ -184,22 +262,28 @@ var feedvalGrid = {
     /*
      * Computes for the dot product of given columns. 
      * 
-     * NOTE: if you are calculating using DM, must use as second param
+     * NOTE: if you are calculating using DM, must use as second param so percentage
      * 
      * param ingredientIDs array containing ingredientIds
-     * param column2 string of the column name 
-     * param column1 string of the column name
-     * param column1 string of the column name
+     * param column1 string of the column name 
+     * param column2 string of the column name
+     * param column3 string of the column name
+     * return dotProduct of ingredients and columns given
+     * 
+     * TODO: consider using getCell since it already divies 100 if contains %
      */
 
     getDotProduct: function (ingredientIDs, column1, column2, column3) {
         var dotProduct = [];
-        var column1Val = 0;
-        var column2Val = 0;
-        var column3Val = 0;
+        var column1Val = 1;
+        var column2Val = 1;
+        var column3Val = 1;
 
         $.each(ingredientIDs, function (ingredientIndex, ingredientID) {
 
+            // if (column1 != undefined) {
+            //     column1Val = feedvalGrid.getCell(ingredientID, column1);
+            // }
             column1Val = feedvalGrid.grid.jqGrid('getCell', ingredientID, column1);
 
             if (column2 == undefined) {
@@ -217,10 +301,10 @@ var feedvalGrid = {
                 column1Val = column1Val / 100;
             }
 
-            if (column2 == ('Min_kgcowd') && feedvalGrid.getCell('header2', 'Min_kgcowd').includes('kg')) {
-                column2Val = column2Val / 2.20462;
-                console.log("dotProductContains !")
-            }
+            // if (column2 == ('Min_kgcowd') && feedvalGrid.getCell('header2', 'Min_kgcowd').includes('kg')) {
+            //     column2Val = column2Val / 2.20462;
+            //     console.log("dotProductContains !")
+            // }
 
             dotProduct[ingredientIndex] = column1Val * column2Val * column3Val;
 
@@ -233,20 +317,25 @@ var feedvalGrid = {
             return a + b;
         }
 
-
-
-        console.log(column1 + " + " + column2 + " + " + column3 + " = " + sum); // 6
+        // console.log(column1 + " + " + column2 + " + " + column3 + " = " + sum); // 6
 
         return sum;
     },
 
+    /*
+     * Returns a matrix containing all the nutrients value in decimal of the given ingredientIDs
+     * Alerts if any nutients is empty or has 0.
+     * 
+     * param ingredientIDs array containing ingredientIds
+     * return matrix from array
+     * 
+     */
     getNutrientCoefficientMatrix: function (ingredientIDs) {
         var nutrientsArray = [];
         var nutrient_value;
         var blank_counter = 0;
         $.each(ingredientIDs, function (ingredientIndex, ingredientID) {
             nutrientsArray[ingredientIndex] = [];
-            //alert('ingredientID: ' + ingredientID + 'ingredientIndex: ' + ingredientIndex);
             // console.log('ingredientID: ' + ingredientID + 'ingredientIndex: ' + ingredientIndex);
             $.each(feedvalGrid.getSelectedNutrients(), function (nutrientIndex, nutrientName) {
                 //alert('ingredientID: ' + ingredientID + ', ingredientIndex: ' + ingredientIndex + ', nutrientIndex: ' + nutrientIndex + ', nutrientName: ' + nutrientName +  ', value: ' + feedvalGrid.getCell(ingredientID, nutrientName) );
@@ -259,17 +348,34 @@ var feedvalGrid = {
                     nutrientsArray[ingredientIndex][nutrientIndex] = nutrient_value;
                 }
             });
-            //if(blank_counter >0)
-            //	alert('There are blank values in some of your nutrient values. They are taking a zero for Analysis purposes');
         });
 
+        if (blank_counter > 0)
+            alert('There are blank values in some of your nutrient values. They are taking a zero for Analysis purposes');
+
+        // console.dir(nutrientsArray);
         return Matrix.create(nutrientsArray);
     },
 
+    /*
+     * Returns value of DM value in decimal value
+     * 
+     * param ingredientIDs array containing ingredientIds
+     * return int DM
+     * 
+     */
     getDryMatterValue: function (ingredientID) {
         return feedvalGrid.getCell(ingredientID, 'DM');
     },
 
+        /*
+         * Returns sum of Dry Matter Values of selected Ingredients.
+         * 
+         * return int total DM
+         * 
+         * TODO: use dotProduct method. REUSE CODE
+         * remove LB
+         */
     getTotalDryMatterValue: function () {
         selectedIngredientIDs = feedvalGrid.getSelectedIngredientIDs();
         var dryMatterValue, calculatedProvided;
@@ -309,7 +415,9 @@ var feedvalGrid = {
     /*
      * Computes for the daily price for per cow. 
      * 
-     * NOTE: if you are calculating using DM, must use as second param
+     * return int sum of daily price per cow. 
+     * 
+     * TODO: remove unit part, after fixing ConvertUnit method.
      * 
      */
 
@@ -375,6 +483,12 @@ var feedvalGrid = {
         return total.toFixed(3);
     },
 
+        /*
+         * Computes for LB per DM
+         * 
+         * return int 
+         * 
+         */
     getLBperDMCalculation: function () {
 
         var totalDM = feedvalGrid.getTotalDryMatterValue();
@@ -386,7 +500,8 @@ var feedvalGrid = {
         return (dollarCowD / totalDM).toFixed(3);
     },
 
-    //TODO: Finish getColumnSum
+    //
+    //TODO: Remove since dotProduct method does the same thing
     getColumnSum: function (columnName) {
         var total = 0;
         var totalValueCalculation = [];
@@ -411,7 +526,18 @@ var feedvalGrid = {
         return total.toFixed(3);
     },
 
+
+        /*
+         * Returns matrix contantaing  (feedPrice / dryMatterValue) for selected ingredients
+         * 
+         * param feedPrices is values from getFeedPrices
+         * param selectedIngredientIds
+         * return matrix 
+         * 
+         */
     getFeedPriceMatrix: function (feedPrices, selectedIngredientIDs) {
+        console.log("getFeedPriceMatrix method is called");
+
         var dryMatterValue, fp = [];
         var feedPrice;
         $.each(selectedIngredientIDs, function (index, ingredientID) {
@@ -426,6 +552,7 @@ var feedvalGrid = {
         return Matrix.create(fp);
     },
 
+    //TODO: getFeedPriceMatrixAll same as last method, so remove
     getFeedPriceMatrixAll: function (feedPrices, selectedIngredientIDs) {
         var dryMatterValue, fp = [];
         var feedPrice;
@@ -441,6 +568,7 @@ var feedvalGrid = {
         return Matrix.create(fp);
     },
 
+    
     displayCalculationsToSolutionRow: function (Horizontal_solution) {
         var selectedNutrients = feedvalGrid.getSelectedNutrients();
 
@@ -822,23 +950,23 @@ var feedvalGrid = {
 
             // going through and if max is 0, set as unchecked in rawData
             var inLB;
-            if (feedvalGrid.getCell('header2', 'Min_kgcowd').includes('lb')) {
-                inLB = true;
-            }
+            // if (feedvalGrid.getCell('header2', 'Min_kgcowd').includes('lb')) {
+            //     inLB = true;
+            // }
             $.each(rawData, function (rowIndex, row) {
                 if (row.Max_kgcowd == 0 || row.Max_kgcowd == '0') {
                     row.Selected = "NO";
                 }
-                if (inLB) {
-                    row.NEl3x_Mcalkg = row.NEl3x_Mcalkg / 2.20462;
+                // if (inLB) {
+                //     row.NEl3x_Mcalkg = row.NEl3x_Mcalkg / 2.20462;
 
-                    if (rowIndex == 43 || rowIndex == 44) {
-                        row.DM = '23';
-                    }
-                    if (rowIndex < 40) {
-                        row.Max_kgcowd = row.Max_kgcowd / 2.20462;
-                    }
-                }
+                //     if (rowIndex == 43 || rowIndex == 44) {
+                //         row.DM = '23';
+                //     }
+                //     if (rowIndex < 40) {
+                //         row.Max_kgcowd = row.Max_kgcowd / 2.20462;
+                //     }
+                // }
             });
 
             data = JSON.stringify(rawData);
@@ -857,9 +985,9 @@ var feedvalGrid = {
             // console.log(solutionVector);
 
             var label = feedvalGrid.getCell('header2', 'Min_kgcowd');
-            if (label.includes('lb')) {
-                feedvalGrid.convertSolutionToLB(solutionVector);
-            }
+            // if (label.includes('lb')) {
+            //     feedvalGrid.convertSolutionToLB(solutionVector);
+            // }
             // check to make sure maxKg=0 ingredients not used ie all ingredients were used cause no solution
             var noSol = false;
             for (var i = 0; i < solutionVector.length; i++) {
@@ -1429,27 +1557,27 @@ var feedvalGrid = {
         }
     },
 
-        //Color row if value is higher than 0 in evaluator state
-        formatNonZeroRow: function () {
-            var allIngredientIDs = feedvalGrid.getAllIngredientIDs();
+    //Color row if value is higher than 0 in evaluator state
+    formatNonZeroRow: function () {
+        var allIngredientIDs = feedvalGrid.getAllIngredientIDs();
 
-            if (toolState == 'evaluator') {
-                $.each(allIngredientIDs, function (i, ingredientID) {
-                    var id = Number(ingredientID);
-                    var Min_kgcowd = feedvalGrid.getCell(id, 'Min_kgcowd');
-                    if (Min_kgcowd > 0) { //deleted
-                        console.log("Formatting: " + ingridedientID);
-                        $('#grid tr[id^="' + id + '"]').addClass("nonZeroRow");
-                    } else {
-                        $('#grid tr[id^="' + id + '"]').removeClass("nonZeroRow");
-                    }
-                });
-            } else {
-                $.each(allIngredientIDs, function (i, ingredientID) {
-                    $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
-                });
-            }
-        },
+        if (toolState == 'evaluator') {
+            $.each(allIngredientIDs, function (i, ingredientID) {
+                var id = Number(ingredientID);
+                var Min_kgcowd = feedvalGrid.getCell(id, 'Min_kgcowd');
+                if (Min_kgcowd > 0) { //deleted
+                    console.log("Formatting: " + ingridedientID);
+                    $('#grid tr[id^="' + id + '"]').addClass("nonZeroRow");
+                } else {
+                    $('#grid tr[id^="' + id + '"]').removeClass("nonZeroRow");
+                }
+            });
+        } else {
+            $.each(allIngredientIDs, function (i, ingredientID) {
+                $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
+            });
+        }
+    },
 
     saveGrid: function () {
         feedvalGrid.grid.jqGrid('editCell', 0, 0, false);
@@ -1461,10 +1589,10 @@ var feedvalGrid = {
     },
 
     AJAXError: function (jqXHR, textStatus, errorThrown) {
-        // feedvalGrid.ajaxErrorModal.find('#response_text').html(jqXHR.responseText);
-        // feedvalGrid.ajaxErrorModal.find('#text_status').html(textStatus);
-        // feedvalGrid.ajaxErrorModal.find('#error_thrown').html(errorThrown);
-        // feedvalGrid.ajaxErrorModal.modal('show');s
+        feedvalGrid.ajaxErrorModal.find('#response_text').html(jqXHR.responseText);
+        feedvalGrid.ajaxErrorModal.find('#text_status').html(textStatus);
+        feedvalGrid.ajaxErrorModal.find('#error_thrown').html(errorThrown);
+        feedvalGrid.ajaxErrorModal.modal('show');
     },
     afterEditCell: function (rowID, cellname, value, iRow, iCol) {
         //console.dir(rowID + ' '+cellname+' '+value+' ' +iRow + ' ' + iCol);
@@ -1509,24 +1637,24 @@ var feedvalGrid = {
         feedvalGrid.clearResults();
         //feedvalGrid.formatNonZeroRow();
 
-                    var allIngredientIDs = feedvalGrid.getAllIngredientIDs();
+        var allIngredientIDs = feedvalGrid.getAllIngredientIDs();
 
-                    if (toolState == 'evaluator') {
-                        $.each(allIngredientIDs, function (i, ingredientID) {
-                            ingredientID = Number(ingredientID);
-                            var Min_kgcowd = feedvalGrid.getCell(ingredientID, 'Min_kgcowd');
-                            if (Min_kgcowd > 0) { //deleted
-                                console.log("Formatting: " + ingredientID);
-                                $('#grid tr[id^="' + ingredientID + '"]').addClass("nonZeroRow");
-                            } else {
-                                $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
-                            }
-                        });
-                    } else {
-                        $.each(allIngredientIDs, function (i, ingredientID) {
-                            $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
-                        });
-                    }
+        if (toolState == 'evaluator') {
+            $.each(allIngredientIDs, function (i, ingredientID) {
+                ingredientID = Number(ingredientID);
+                var Min_kgcowd = feedvalGrid.getCell(ingredientID, 'Min_kgcowd');
+                if (Min_kgcowd > 0) { //deleted
+                    console.log("Formatting: " + ingredientID);
+                    $('#grid tr[id^="' + ingredientID + '"]').addClass("nonZeroRow");
+                } else {
+                    $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
+                }
+            });
+        } else {
+            $.each(allIngredientIDs, function (i, ingredientID) {
+                $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
+            });
+        }
 
     },
 
@@ -1584,11 +1712,13 @@ var feedvalGrid = {
             var fromUnit;
             $('.input_column select').focus(function (eventObject) {
                 fromUnit = $(eventObject.target).val();
+                console.dir(fromUnit);
             }).change(function (eventObject) {
                 var tr, ingredientID, ingredientName, price, select, toUnit;
                 feedvalGrid.clearResults();
                 select = $(eventObject.target);
                 toUnit = select.val();
+                console.dir(toUnit);
                 tr = select.parents('tr').get(0);
                 ingredientID = $(tr).attr('id');
                 var pricePerUnitColumnIndex = feedvalGrid.getColumnIndex('Price_Unit');
@@ -1943,27 +2073,27 @@ var feedvalGrid = {
 
         $('#eq_result').text('');
 
-                //Color row if value is higher than 0 in evaluator state
-                // feedvalGrid.formatNonZeroRow();
+        //Color row if value is higher than 0 in evaluator state
+        // feedvalGrid.formatNonZeroRow();
 
-                            var allIngredientIDs = feedvalGrid.getAllIngredientIDs();
+        var allIngredientIDs = feedvalGrid.getAllIngredientIDs();
 
-                            if (toolState == 'evaluator') {
-                                $.each(allIngredientIDs, function (i, ingredientID) {
-                                    ingredientID = Number(ingredientID);
-                                    var Min_kgcowd = feedvalGrid.getCell(ingredientID, 'Min_kgcowd');
-                                    if (Min_kgcowd > 0) { //deleted
-                                        console.log("Formatting: " + ingredientID);
-                                        $('#grid tr[id^="' + ingredientID + '"]').addClass("nonZeroRow");
-                                    } else {
-                                        $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
-                                    }
-                                });
-                            } else {
-                                $.each(allIngredientIDs, function (i, ingredientID) {
-                                    $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
-                                });
-                            }
+        if (toolState == 'evaluator') {
+            $.each(allIngredientIDs, function (i, ingredientID) {
+                ingredientID = Number(ingredientID);
+                var Min_kgcowd = feedvalGrid.getCell(ingredientID, 'Min_kgcowd');
+                if (Min_kgcowd > 0) { //deleted
+                    console.log("Formatting: " + ingredientID);
+                    $('#grid tr[id^="' + ingredientID + '"]').addClass("nonZeroRow");
+                } else {
+                    $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
+                }
+            });
+        } else {
+            $.each(allIngredientIDs, function (i, ingredientID) {
+                $('#grid tr[id^="' + ingredientID + '"]').removeClass("nonZeroRow");
+            });
+        }
 
     },
 
@@ -2035,13 +2165,13 @@ var feedvalGrid = {
         });
 
         //Color row if value is higher than 0 in evaluator state
-                allIngredientIDs = feedvalGrid.getAllIngredientIDs();
-                $.each(allIngredientIDs, function (index, ingredientID) {
-                    Min_kgcowd = feedvalGrid.getCell(ingredientID, 'Min_kgcowd');
-                    if (Min_kgcowd > 0) {
-                        $('#grid tr[id^="' + ingredientID + '"]').addClass("nonZeroRow");
-                    }
-                });
+        allIngredientIDs = feedvalGrid.getAllIngredientIDs();
+        $.each(allIngredientIDs, function (index, ingredientID) {
+            Min_kgcowd = feedvalGrid.getCell(ingredientID, 'Min_kgcowd');
+            if (Min_kgcowd > 0) {
+                $('#grid tr[id^="' + ingredientID + '"]').addClass("nonZeroRow");
+            }
+        });
 
     },
 
@@ -2166,11 +2296,11 @@ var feedvalGrid = {
         });
 
         if (toolState == 'Optimizer') {
-        $('div#jqgh_grid_Min_kgcowd').text('Min lb/cow.d');
-        feedvalGrid.setCell('header2', 'Min_kgcowd', 'Min lb/cow.d');
+            $('div#jqgh_grid_Min_kgcowd').text('Min lb/cow.d');
+            feedvalGrid.setCell('header2', 'Min_kgcowd', 'Min lb/cow.d');
 
-        $('div#jqgh_grid_Max_kgcowd').text('Max lb/cow.d');
-        feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max lb/cow.d');
+            $('div#jqgh_grid_Max_kgcowd').text('Max lb/cow.d');
+            feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max lb/cow.d');
         }
 
         $('div#jqgh_grid_NEl3x_Mcalkg').text('NEl3x Mcal/lb');
@@ -2224,14 +2354,14 @@ var feedvalGrid = {
         });
 
         // console.log(feedvalGrid.grid.jqGrid('getCell', '42', 'NEl3x_Mcalkg'));
-if(toolState == 'Optimizer'){
- $('div#jqgh_grid_Min_kgcowd').text('Min kg/cow.d');
- feedvalGrid.setCell('header2', 'Min_kgcowd', 'Min kg/cow.d');
- $('div#jqgh_grid_Max_kgcowd').text('Max kg/cow.d');
- feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max kg/cow.d');
- $('div#jqgh_grid_Predicted_Value').text('Solution kg/cow.d');
-}
-       
+        if (toolState == 'Optimizer') {
+            $('div#jqgh_grid_Min_kgcowd').text('Min kg/cow.d');
+            feedvalGrid.setCell('header2', 'Min_kgcowd', 'Min kg/cow.d');
+            $('div#jqgh_grid_Max_kgcowd').text('Max kg/cow.d');
+            feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max kg/cow.d');
+            $('div#jqgh_grid_Predicted_Value').text('Solution kg/cow.d');
+        }
+
 
         $('div#jqgh_grid_NEl3x_Mcalkg').text('NEl3x Mcal/kg');
         // feedvalGrid.setCell('header2', 'NEl3x Mcal/lb', 'NEl3x Mcal/kg');
@@ -2485,13 +2615,13 @@ $(document).ready(function () {
             if ($('#convert-prices-to-kgs').text().includes('kg')) {
                 $('#convert-prices-to-kgs').text('Convert prices to lb');
                 $('#convert-prices-to-kgscalc').text('Convert prices to lb');
-                feedvalGrid.convertToKg();
-                feedvalGrid_calc.convertToKg();
+                // feedvalGrid.convertToKg();
+                // feedvalGrid_calc.convertToKg();
             } else {
                 $('#convert-prices-to-kgs').text('Convert prices to kg');
                 $('#convert-prices-to-kgscalc').text('Convert prices to kg');
-                feedvalGrid.convertToLb();
-                feedvalGrid_calc.convertToLb();
+                //feedvalGrid.convertToLb();
+                // feedvalGrid_calc.convertToLb();
 
             }
         });
@@ -2500,12 +2630,12 @@ $(document).ready(function () {
             if ($('#convert-to-kgs').text().includes('kg')) {
                 $('#convert-to-kgs').text('Convert amounts to lb');
                 $('#convert-to-kgscalc').text('Convert amounts to lb');
-                feedvalGrid.convertValsToKg();
+                // feedvalGrid.convertValsToKg();
                 // feedvalGrid_calc.convertValsToKg();
             } else {
                 $('#convert-to-kgs').text('Convert amounts to kg');
                 $('#convert-to-kgscalc').text('Convert amouunts to kg');
-                feedvalGrid.convertValsToLb();
+                // feedvalGrid.convertValsToLb();
                 // feedvalGrid_calc.convertValsToLb();
             }
             //feedvalGrid_calc.convertToKg();
