@@ -113,22 +113,22 @@ class FeedvalSpreadsheetDao extends FeedValDao {
 
       private function getMINOPColumnNumber()
     {
-        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() + 1;
+        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() ;
     }
 
     private function getMAXOPColumnNumber()
     {
-        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() + 2;
+        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() + 1;
     }
 
     private function getPriceColumnNumber()
     {
-        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() + 4;
+        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() + 3;
     }
 
     private function getUnitColumnNumber()
     {
-        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() + 3;
+        return self::NUTRIENTS_START_COLUMN_INDEX + $this->getNumberOfNutrients() + 2;
     }
 
     public function getRows()

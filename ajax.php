@@ -12,19 +12,19 @@
 include 'chromePhp.php';
 ChromePhp::log('Debugging logging started');
 
-
-
 if(isset($_GET['tip']) or isset($_POST['tip'])){
     require_once 'utils/FeedValAJAXAutoloadcalc.php';
 }else{
     require_once 'utils/FeedValAJAXAutoload.php';
 }
 
-//include_once 'update/automaticPriceUpdate.php';
+// include_once 'update/automaticPriceUpdate.php';
 
 
 if (isset($_POST['data']) && isset($_POST['minimize'])) {
     // Decode the JSON encoded data.
+    ChromePhp::log('data and minimize');
+
     if (get_magic_quotes_gpc()) {
         $cleanData = stripslashes($_POST['data']);
         $cleanColumnsToAppear = stripslashes($_POST['columnsToAppear']);
@@ -39,19 +39,15 @@ if (isset($_POST['data']) && isset($_POST['minimize'])) {
 
     $minimization = FeedValMinimizationFactory::getCoefficients($columnsToAppear, $data);
 
-
-
-
-
     // $minimizationArray = $minimization->debug_to_console($data);
-
-
 
     $minimizationArray = $minimization->getMinArray();
 
     echo json_encode($minimizationArray);
 
 } else if (isset($_POST['data'])) {
+
+       ChromePhp::log('Entered data creating spreadsheet');
 
     // Decode the JSON encoded data.
     if (get_magic_quotes_gpc()) {
@@ -64,6 +60,7 @@ if (isset($_POST['data']) && isset($_POST['minimize'])) {
     $data = json_decode($cleanData, TRUE);
     $columnsToAppear = json_decode($cleanColumnsToAppear, TRUE);
 
+    ChromePhp::log('Before creating spreadsheet');
     // Create the Excel spreadsheet and push it for download.
     $spreadsheet = FeedValSpreadsheetFactory::createSpreadsheet($columnsToAppear, $data);
     $spreadsheetFileName = $spreadsheet->getFileName();
@@ -72,6 +69,9 @@ if (isset($_POST['data']) && isset($_POST['minimize'])) {
 
 
 } else if (isset($_GET['getMinMaxDates'])) {
+
+    ChromePhp::log('getminmaxdates: ');
+
     $databaseDao = new FeedValDatabaseDao();
     $minDate = $databaseDao->getMinDate();
     $maxDate = $databaseDao->getMaxDate();
@@ -103,13 +103,13 @@ if (isset($_POST['data']) && isset($_POST['minimize'])) {
 }else{
 
     if (isset($_POST['data_file_submit_calc'])){
+        ChromePhp::log('Before creating spreadsheet using data_file_submit_calc');
+
         $userFile = FeedValUtil::uploadFile($_FILES['data_file_calc']);
         $feedValXML = new FeedValSpreadsheetXML($userFile);
         
     } else if (isset($_POST['data_file_submit'])) {
-        //$userFile = FeedValUtil::uploadFile($_FILES['data_file']);
-        $userFile = FeedValUtils::uploadFile($_FILES['data_file']);
-
+        $userFile = FeedValUtil::uploadFile($_FILES['data_file']);
 
         $feedValXML = new FeedValSpreadsheetXML($userFile);
     }else{

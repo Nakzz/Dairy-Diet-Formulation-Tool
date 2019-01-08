@@ -36,7 +36,7 @@ var feedvalGrid = {
      * 
      * return ajax request containing 
      * TODO: maybe consider removing. since this can also just be done in javascript instead of ajax
-     * NOTE: performs an AJAX request, but why?
+     * NOTE: performs an AJAX request, to convert using PHP. 
      */
     convertUnits: function (ing) {
         console.log("convertUnits method is called, ing: " + ing);
@@ -52,8 +52,14 @@ var feedvalGrid = {
                 convertUnits: true
             },
             type: 'POST',
-            dataType: 'json'
-        });
+            dataType: 'json',
+
+        //     success: function(converted){
+        //         console.log("Data from convert Units:" + converted);
+        // }
+        })
+            
+        
     },
 
     /*
@@ -2329,7 +2335,7 @@ var feedvalGrid = {
 
             $('div#jqgh_grid_Max_kgcowd').text('Max lb/cow.d');
             feedvalGrid.setCell('header2', 'Max_kgcowd', 'Max lb/cow.d');
-        }
+        } 
 
         $('div#jqgh_grid_NEl3x_Mcalkg').text('NEl3x Mcal/lb');
         feedvalGrid.grid.jqGrid('setCell', 'header2', 'NEl3x_Mcalkg', 'NEl3x Mcal/lb');
@@ -2571,7 +2577,8 @@ $(document).ready(function () {
     $('#upload_form').ajaxForm({
         dataType: 'json',
         type: 'POST',
-        beforeSubmit: function () {
+        beforeSubmit: function (data) {
+            console.log();
             var selectedFile = $('input[name=data_file]').val();
             if (selectedFile == '') {
                 alert('Please select a file to upload.');
