@@ -1,1 +1,4 @@
+log 
+python_dietcal_example.log
+*/*.log
 vendor

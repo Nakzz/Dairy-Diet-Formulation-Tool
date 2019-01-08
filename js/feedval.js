@@ -1945,16 +1945,18 @@ var feedvalGrid = {
         feedvalGrid.setCell(41, 'DM', 23);
         feedvalGrid.setCell(42, 'DM', 23);
         // feedvalGrid.convertMaxToLb();
-        feedvalGrid.convertNelToLb();
-        $('div#jqgh_grid_NEl3x_Mcalkg').text('NEl3x Mcal/lb');
-        $('div#jqgh_grid_Min_kgcowd').text('Min lb/cow.d');
-        $('div#jqgh_grid_Max_kgcowd').text('Max lb/cow.d');
-        $('div#jqgh_grid_Predicted_Value').text('Solution lb/cow.d');
+
+        //TODO: KG only Branch
+        // feedvalGrid.convertNelToLb();
+        // $('div#jqgh_grid_NEl3x_Mcalkg').text('NEl3x Mcal/lb');
+        // $('div#jqgh_grid_Min_kgcowd').text('Min lb/cow.d');
+        // $('div#jqgh_grid_Max_kgcowd').text('Max lb/cow.d');
+        // $('div#jqgh_grid_Predicted_Value').text('Solution lb/cow.d');
 
 
         //SET ALL AS LB
-        feedvalGrid.grid.jqGrid('setCell', 'header2', 'NEl3x_Mcalkg', 'NEl3x Mcal/lb');
-        feedvalGrid.grid.jqGrid('setCell', 'header3', 'NEl3x_Mcalkg', 'NEl3x Mcal/lb');
+        // feedvalGrid.grid.jqGrid('setCell', 'header2', 'NEl3x_Mcalkg', 'NEl3x Mcal/lb');
+        // feedvalGrid.grid.jqGrid('setCell', 'header3', 'NEl3x_Mcalkg', 'NEl3x Mcal/lb');
 
 
 
