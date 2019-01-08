@@ -20,7 +20,7 @@ if(isset($_GET['tip']) or isset($_POST['tip'])){
     require_once 'utils/FeedValAJAXAutoload.php';
 }
 
-include_once 'update/automaticPriceUpdate.php';
+//include_once 'update/automaticPriceUpdate.php';
 
 
 if (isset($_POST['data']) && isset($_POST['minimize'])) {
@@ -34,8 +34,19 @@ if (isset($_POST['data']) && isset($_POST['minimize'])) {
     }
     $data = json_decode($cleanData, TRUE);
     $columnsToAppear = json_decode($cleanColumnsToAppear, TRUE);
+
+  
+
     $minimization = FeedValMinimizationFactory::getCoefficients($columnsToAppear, $data);
-    
+
+
+
+
+
+    // $minimizationArray = $minimization->debug_to_console($data);
+
+
+
     $minimizationArray = $minimization->getMinArray();
 
     echo json_encode($minimizationArray);

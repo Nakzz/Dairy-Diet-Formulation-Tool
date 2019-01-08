@@ -19,22 +19,23 @@ var feedvalGrid = {
     gridview: true,
 
 
-    /*
+    /**
      * Gets the number of all the Nutrients.
      */
+
     getNumberOfNutrients: function () {
         return $.map(feedvalGrid.nutrients, function (element) {
             return element;
         }).length;
     },
 
-    /*
+    /**
      * Converts units of the ingredient passsed but submitting ajax request containing two properties
      * 
      * param ing ingredient
      * 
      * return ajax request containing 
-     * TODO: i
+     * TODO: maybe consider removing. since this can also just be done in javascript instead of ajax
      * NOTE: performs an AJAX request, but why?
      */
     convertUnits: function (ing) {
@@ -207,6 +208,8 @@ var feedvalGrid = {
      *Returns units of an ingredient from Unit column of the grid
      *
      * param ingredientID int
+     * 
+     * returns unit of the Ingredient for price/Unit from Grid
      * 
      */
     getUnit: function (ingredientID) {
@@ -552,23 +555,14 @@ var feedvalGrid = {
         return Matrix.create(fp);
     },
 
-    //TODO: getFeedPriceMatrixAll same as last method, so remove
-    getFeedPriceMatrixAll: function (feedPrices, selectedIngredientIDs) {
-        var dryMatterValue, fp = [];
-        var feedPrice;
-        $.each(selectedIngredientIDs, function (index, ingredientID) {
-            feedPrice = feedPrices[ingredientID];
-            if (feedPrice !== undefined) {
-                dryMatterValue = feedvalGrid.getDryMatterValue(ingredientID);
-                fp.push([feedPrice / dryMatterValue]);
-            }
 
-        });
-
-        return Matrix.create(fp);
-    },
-
-    
+    /**
+     * Displays the horizontal solution row
+     * 
+     * TODO: work on proper warning signs.where is warning generating from ?
+     * 
+     * @param {*} Horizontal_solution 
+     */
     displayCalculationsToSolutionRow: function (Horizontal_solution) {
         var selectedNutrients = feedvalGrid.getSelectedNutrients();
 
@@ -694,6 +688,11 @@ var feedvalGrid = {
 
     },
 
+    /**
+     * Displays selection Error Message
+     * 
+     * TODO: Might need work
+     */
     displaySelectionErrorMessage: function () {
         var rupRdpCpSelected, nutrientsToBeRemoved, onlyRupRdpSelected, numberIngredientBiggerNumberNutrients;
         feedvalGrid.invalidSelectionModal.find('li').hide();
@@ -732,32 +731,53 @@ var feedvalGrid = {
         }
     },
 
+    /**
+     * Type of error Message shown in div
+     */
     showNotOptimalSolutionMessage: function () {
         feedvalGrid.invalidSelectionModal.find('#SolNotOptimal').show();
     },
 
+        /**
+         * Type of error Message shown in div
+         */
     showSolutionNotConvergedMessage: function () {
         feedvalGrid.invalidSelectionModal.find('#SolNoConverge').show();
     },
 
+        /**
+         * Type of error Message shown in div
+         */
     showOnlyRupRdpSelectedMessage: function () {
         feedvalGrid.invalidSelectionModal.find('#rup_rdp').show();
     },
 
+        /**
+         * Type of error Message shown in div
+         */
     showRupRdpCpSelectedMessage: function () {
-        return false;
+
         feedvalGrid.invalidSelectionModal.find('#rup_rdp_cp').show();
     },
 
+        /**
+         * Type of error Message shown in div containing name of nutrients to be removed
+         */
     showNutrientsToBeRemovedMessage: function (nutrientsToBeRemoved) {
-        //return false;
         feedvalGrid.invalidSelectionModal.find('#nut_all_zeroes').show().find('span').text(nutrientsToBeRemoved.join(', '));
     },
 
+    /**
+     * Type of error Message shown in div containing number of nutrients to be removed
+     */
     showNotnumberIngredientBiggerNumberNutrientMessage: function () {
         feedvalGrid.invalidSelectionModal.find('#NumIngBigNumNut').show();
     },
 
+/**
+ *  Empties the cell for given column name of the Grid
+ * @param {*} columnsToClear string
+ */    
     clearColumns: function (columnsToClear) {
         var ingredients;
         ingredients = feedvalGrid.getAllIngredientIDs();
@@ -770,6 +790,9 @@ var feedvalGrid = {
         });
     },
 
+    /**
+     * Empties the cell of the result column of the Grid
+     */
     clearResults: function () {
         var summaryRow, resultColumns;
 
@@ -1078,6 +1101,9 @@ var feedvalGrid = {
                     //FIXME: Implement displaying of the results
                     solutionArray = data;
                     //window.location.href = data.spreadsheetFilename;
+                },
+                error: function(data){
+                    console.log(data.responseText);
                 }
             });
             //console.log("solution array in minimization");

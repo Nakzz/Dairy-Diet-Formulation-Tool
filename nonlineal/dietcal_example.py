@@ -98,6 +98,7 @@ try:
     NUTRIENTS_php = json.loads(sys.argv[7])
     SELECTED = json.loads(sys.argv[8])
 except:
+    logging.debug(sys.argv)
     print "ERROR"
     sys.exit(1)
 # Generate some data to send to PHP
@@ -122,11 +123,15 @@ CONS_LHS_MIN_2_php = order_vector(CONS_LHS_MIN_2_php)
 # =============================================================================
 try:
     from mpi4py import MPI
+
     comm = MPI.COMM_WORLD
     myrank = comm.Get_rank()
+
 except:
     raise ImportError('mpi4py is required for parallelization')
 #end
+
+
 
 # =============================================================================
 # Extension modules
@@ -192,7 +197,6 @@ opt_prob.addObj('f')
 for i in range(1,len(NUTRIENTS_php[0])*2+1):
         g_value = 'g' + str(i)
         opt_prob.addCon(g_value,'i')
-
 
 # Instantiate Optimizer (SLSQP) 
 slsqp = SLSQP()

@@ -47,6 +47,7 @@ class FeedValMinimization
         //Generation of prices vector (f) and constraints limits, and nutrients
         $index_array=0;
 	foreach ($data as $dataRow) {
+
 		//nutrients values include LHS and RHS limints for the minimization
 		if (($dataRow['Selected'] === 'YES')||($dataRow['Ingredient'] == 'Max')||($dataRow['Ingredient'] == 'Min')){
 			if($dataRow['Price_Unit']=='')
@@ -109,6 +110,7 @@ class FeedValMinimization
 			$cons_rhs_max_2 = array_slice($cons_rhs_max_2,0,-2);
 			$cons_lhs_min_2 = array_slice($cons_lhs_min_2,0,-2);
 			$f = array_slice($f,0,-2);
+                
 
 	$this->minimizationArray=$this->nonlinealcalculate($f,$columnsToAppear,$nutrients,$cons_rhs_max_2,$cons_lhs_min_2,$selected_indexes,$non_selected_indexes);
 
@@ -138,8 +140,20 @@ class FeedValMinimization
 
 	$DM = array_slice($DM,0,-2);
 
+    // $command=  escapeshellarg(json_encode($f)) . ' ' . escapeshellarg(json_encode($DM)) .' ' . escapeshellarg(json_encode($cons_rhs_max_2)) .' '. escapeshellarg(json_encode($cons_lhs_min_2)) . ' ' . escapeshellarg(json_encode($cons_rhs_max_1)) . ' '. escapeshellarg(json_encode($cons_lhs_min_1)) . ' ' . escapeshellarg(json_encode($nutrientsArray)). ' ' . escapeshellarg(json_encode($selected_indexes)) ;
+
+    // echo $command;
+
 	$results = shell_exec('python nonlineal/dietcal_example.py ' . escapeshellarg(json_encode($f)) . ' ' . escapeshellarg(json_encode($DM)) .' ' . escapeshellarg(json_encode($cons_rhs_max_2)) .' '. escapeshellarg(json_encode($cons_lhs_min_2)) . ' ' . escapeshellarg(json_encode($cons_rhs_max_1)) . ' '. escapeshellarg(json_encode($cons_lhs_min_1)) . ' ' . escapeshellarg(json_encode($nutrientsArray)). ' ' . escapeshellarg(json_encode($selected_indexes)));
-	$resultData = json_decode($results, true);
+    
+    // echo $results;
+    
+    $resultData = json_decode($results, true);
+    
+    
+
+
+
 	//Taking care of non selected results
 	//maing solution of array of size #ingredients+MIN,MAX
         
