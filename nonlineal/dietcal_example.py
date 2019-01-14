@@ -136,9 +136,9 @@ except:
 # =============================================================================
 # Extension modules
 # =============================================================================
-#from pyOpt import *
-from pyOpt import Optimization
-from pyOpt import SLSQP
+from pyOpt import *
+# from pyOpt import Optimization
+# from pyOpt import SLSQP
 
 # =============================================================================
 # 
