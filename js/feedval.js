@@ -353,6 +353,7 @@ var feedvalGrid = {
                 if ((nutrient_value == '') || isNaN(nutrient_value)) {
                     nutrientsArray[ingredientIndex][nutrientIndex] = 0;
                     blank_counter++;
+                    console.log(ingredientID)
                 } else {
                     nutrientsArray[ingredientIndex][nutrientIndex] = nutrient_value;
                 }
@@ -361,6 +362,7 @@ var feedvalGrid = {
 
         if (blank_counter > 0)
             alert('There are blank values in some of your nutrient values. They are taking a zero for Analysis purposes');
+        
 
         // console.dir(nutrientsArray);
         return Matrix.create(nutrientsArray);
@@ -447,6 +449,7 @@ var feedvalGrid = {
             } else {
                 calculatedProvided = Number(feedvalGrid.grid.jqGrid('getCell', ingredientID, "Predicted_Value"));
             }
+
             priceUnit = Number(feedvalGrid.grid.jqGrid('getCell', ingredientID, "Price_Unit"));
 
             switch (unit) {
@@ -459,10 +462,10 @@ var feedvalGrid = {
                 case "cwt":
                     conversionFactor = 100;
                     break;
-                case "kg":
+                case "lb":
                     conversionFactor = 2.20462;
                     break;
-                case "lb":
+                case "kg":
                     conversionFactor = 1;
                     break;
                 default:
@@ -669,7 +672,10 @@ var feedvalGrid = {
         var dmTotal = feedvalGrid.getDotProduct(selectedIngredients, "DM", "Min_kgcowd");
         var dmFromForage = feedvalGrid.getDotProduct(forageIngredientID, "DM", "Min_kgcowd") / dmTotal;
         var ndfFromForage = feedvalGrid.getDotProduct(forageIngredientID, "DM", "Min_kgcowd", "NDF") / dmTotal;
-        var dolarPerLbDm = (feedvalGrid.getDollarPerCowDaily() / dmTotal).toFixed(3) + '$/lb DM';
+
+        //TODO: based on unit. currently only on kg
+        // var dolarPerLbDm = (feedvalGrid.getDollarPerCowDaily() / dmTotal).toFixed(3) + '$/lb DM';
+        var dolarPerLbDm = (feedvalGrid.getDollarPerCowDaily() / dmTotal).toFixed(3) + '$/kg DM';
 
         var amountProvided = feedvalGrid.getColumnSum('Min_kgcowd');
         formattedPrices['DM'] = dmTotal.toFixed(3) + dmLabel;
@@ -836,6 +842,9 @@ var feedvalGrid = {
         $('#r_square, #adjusted_r_square').text('');
     },
 
+    /**
+     * Return an array containing get all IngredientIDs
+     */
     getAllIngredientIDs: function () {
         return feedvalGrid.grid.jqGrid('getDataIDs');
     },
@@ -845,7 +854,7 @@ var feedvalGrid = {
         return nutrientCoefficientMatrix.x(predictedNutrientPriceMatrix);
     },
 
-
+/** Initiate calculation for the Evaluator state */
     calculateEvaluator: function () {
         // TODO: Get formulars from excel and finish
         // console.log("Calcutationg manually");
@@ -926,6 +935,7 @@ var feedvalGrid = {
         feedvalGrid.displayCalculationsToSolutionRow(Horizontal_solution);
     },
 
+/** Initiate calculation for the Optimizer state */
     analyze: function () {
         var predictedNutrientPriceMatrix, nutrientCoefficientMatrix, selectedIngredientIDs,
             predictedFeedPriceMatrix, allIngredientIDs, percentageDifferenceMatrix,
@@ -1080,7 +1090,7 @@ var feedvalGrid = {
 
         });
 
-
+    /** Calculate minumization problem */
         function calculateMinimization(data, columnsToAppear) {
             var solutionArray;
 
