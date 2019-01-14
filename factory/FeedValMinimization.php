@@ -167,6 +167,9 @@ class FeedValMinimization
                 $minimizationArrayNonSelected[$index_tmp] = null; //FIXME: Change the value to Null or something else
         }
 
+        if(empty($minimizationArraySelected)){
+            $minimizationArraySelected = null;
+        } 
 
         $minimizationArrayFull = $minimizationArraySelected + $minimizationArrayNonSelected;
 
