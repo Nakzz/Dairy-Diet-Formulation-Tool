@@ -2,3 +2,5 @@ log
 python_dietcal_example.log
 */*.log
 vendor
+./python_dietcal_example.log
+
